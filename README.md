@@ -22,6 +22,10 @@ A comprehensive machine learning project for predicting used car prices using va
 This project implements an end-to-end machine learning pipeline for predicting used car prices in the Indian market. The solution includes:
 
 - **Comprehensive Data Cleaning**: Handling missing values, normalizing units, and extracting features from mixed-format columns
+- **Enhanced Preprocessing**: 
+  - **KNN Imputation**: Using K-Nearest Neighbors imputation (n_neighbors=5) for sophisticated missing value handling
+  - **Polynomial Features**: Generating interaction features (degree=2, interaction_only=True) to capture feature relationships
+  - Standard scaling for numerical features
 - **Advanced Feature Engineering**: Creating derived features like car age, km/year, frequency encodings, and residual encodings
 - **Multiple Model Evaluation**: Comparing baseline and advanced models including Ridge, Random Forest, XGBoost, CatBoost, and LightGBM
 - **Target Encoding**: Using target encoding for high-cardinality categorical features
@@ -54,15 +58,18 @@ The dataset contains information about **8,128 used cars** with the following at
 - `torque`: Torque specification (in Nm or kgm, with RPM range)
 - `seats`: Number of seats
 
-**Dataset Source:** [Kaggle](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho)
+**Dataset Source:** The dataset is loaded from the IISC Data Catalysts GitHub repository. The original dataset is maintained by Kaggle team - [Kaggle](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho). This has been downloaded from Kaggle and uploaded into GitHub for ease of access.
 
 ## 🔧 Features
 
 ### Data Preprocessing
-- Missing value imputation (median for numeric, constant for categorical)
+- **KNN Imputation**: Uses K-Nearest Neighbors (n_neighbors=5) to impute missing values based on similar observations (more sophisticated than median imputation)
+- Missing value imputation (constant for categorical)
 - Unit normalization (km/kg → kmpl, kgm → Nm)
 - String parsing for mixed-format columns (mileage, engine, max_power, torque)
 - RPM extraction from complex torque strings
+- **Polynomial Features**: Generates interaction features (degree=2, interaction_only=True) to capture multiplicative relationships between features
+- Standard scaling for numerical features
 
 ### Feature Engineering
 - **Derived Features**: Car age, kilometers per year, abnormal usage flags
@@ -79,14 +86,15 @@ The dataset contains information about **8,128 used cars** with the following at
 ## 📁 Project Structure
 
 ```
-DSP/
-├── DSPCourse_Project_UsedCarPricePrediction-4_Updated.ipynb  # Main notebook
-├── README.md                                                  # This file
-└── artifacts/                                                 # Saved models (generated after running)
-    ├── preprocessor_lgb.joblib                               # Preprocessing pipeline
-    ├── target_encoder.joblib                                  # Target encoder
-    ├── lgb_model.txt                                          # Main LightGBM model
-    └── lgb_quantile_*.txt                                     # Quantile regression models
+car-price-prediction/
+├── DSPCourse_Project_UsedCarPricePrediction.ipynb  # Main notebook
+├── README.md                                       # This file
+├── CarData.csv                                     # Dataset (can be loaded from GitHub)
+└── artifacts/                                      # Saved models (generated after running)
+    ├── preprocessor_lgb.joblib                    # Preprocessing pipeline
+    ├── target_encoder.joblib                       # Target encoder
+    ├── lgb_model.txt                               # Main LightGBM model
+    └── lgb_quantile_*.txt                          # Quantile regression models
 ```
 
 ## 🚀 Installation
@@ -113,7 +121,7 @@ DSP/
 
 3. **Open the notebook:**
    ```bash
-   jupyter notebook DSPCourse_Project_UsedCarPricePrediction-4_Updated.ipynb
+   jupyter notebook DSPCourse_Project_UsedCarPricePrediction.ipynb
    ```
 
 ## 💻 Usage
@@ -163,6 +171,12 @@ print(f"Predicted Price: ₹{predicted_price:,.0f}")
 3. **Torque Processing**: Extract torque values and normalize units (kgm → Nm)
 4. **RPM Extraction**: Parse RPM information from various formats (ranges, +/- notation)
 
+### Enhanced Preprocessing Pipeline
+
+1. **KNN Imputation**: Uses K-Nearest Neighbors (n_neighbors=5) to impute missing values. This is more sophisticated than median imputation as it considers relationships between features to provide more accurate missing value estimates.
+2. **Standard Scaling**: Normalizes features to have zero mean and unit variance
+3. **Polynomial Features**: Creates interaction features (degree=2, interaction_only=True) to capture multiplicative relationships between features (e.g., age × kms_driven, age × max_power_value). The `interaction_only=True` parameter means only interaction terms are created, not squared terms.
+
 ### Feature Engineering
 
 1. **Temporal Features**: Calculate car age from manufacturing year
@@ -174,13 +188,14 @@ print(f"Predicted Price: ₹{predicted_price:,.0f}")
 
 ### Model Training Strategy
 
-1. **Baseline Models**: Start with simple linear models (Ridge)
+1. **Baseline Models**: Start with simple linear models (Ridge) with enhanced preprocessing (KNN imputation + polynomial features)
 2. **Tree-Based Models**: Evaluate Random Forest, XGBoost, CatBoost, LightGBM
 3. **Ensemble Methods**: Stack multiple models for improved performance
 4. **Advanced Techniques**: 
-   - Target encoding for high-cardinality features
+   - Target encoding for high-cardinality features (make, model)
    - Quantile regression for uncertainty estimation
-   - Cross-validation with honest encoding
+   - Cross-validation with honest target encoding (out-of-fold predictions)
+   - Early stopping for gradient boosting models
 
 ## 🤖 Models Evaluated
 
@@ -200,10 +215,18 @@ print(f"Predicted Price: ₹{predicted_price:,.0f}")
 
 The LightGBM model with target encoding achieved the best performance:
 
-- **Training R²**: 0.974
-- **Test R²**: 0.949
-- **RMSE**: ₹104,401
-- **MAE**: ₹58,607
+- **Training R²**: 0.984
+- **Test R²**: 0.950
+- **RMSE**: ₹102,484
+- **MAE**: ₹57,977
+
+### Cross-Validation Results
+
+5-fold cross-validation R² scores:
+- **Ridge Regression**: 0.84 - 0.94 (varies by fold)
+- **CatBoost**: 0.94 - 0.95
+- **LightGBM**: 0.94 - 0.95
+- **XGBoost**: 0.93 - 0.95
 
 ### Key Findings
 
@@ -218,8 +241,8 @@ The LightGBM model with target encoding achieved the best performance:
    - First owner cars are most valuable
 
 3. **Prediction Intervals**:
-   - 90% prediction interval coverage: ~76.6%
-   - Quantile regression provides uncertainty estimates
+   - 90% prediction interval coverage: ~77.0%
+   - Quantile regression provides uncertainty estimates (5th, 50th, 95th percentiles)
 
 ## 🛠 Technologies Used
 
@@ -242,7 +265,7 @@ The LightGBM model with target encoding achieved the best performance:
 
 ## 🔍 Key Insights
 
-1. **Data Quality**: The dataset contains missing values in performance attributes (~221 missing), which are handled through imputation
+1. **Data Quality**: The dataset contains missing values in performance attributes (~221 missing in mileage, engine, max_power, torque, seats), which are handled through KNN imputation (n_neighbors=5) - a more sophisticated approach than median imputation
 
 2. **Feature Importance**: Car age is the strongest predictor, followed by kilometers driven and engine specifications
 
@@ -254,19 +277,25 @@ The LightGBM model with target encoding achieved the best performance:
 
 ## 🔮 Future Improvements
 
-- **Enhanced Name Parsing**: Use regex patterns or fuzzy matching against curated make/model databases
-- **Leakage Testing**: Evaluate models with and without potentially leaked features
-- **Calibrated Intervals**: Implement conformalized quantile regression for better uncertainty estimates
+- **Enhanced Name Parsing**: Use regex patterns or fuzzy matching against curated make/model databases for more accurate extraction
+- **Leakage Testing**: Evaluate models with and without potentially leaked features to ensure robustness
+- **Calibrated Intervals**: Implement conformalized quantile regression for better-calibrated uncertainty estimates
 - **Additional Features**: Explore brand reputation scores, depreciation curves, market segment indicators
+- **Polynomial Feature Selection**: Consider feature selection techniques to reduce dimensionality after polynomial feature generation
+- **KNN Imputation Tuning**: Experiment with different values of n_neighbors for KNN imputation to optimize missing value handling
 - **Model Optimization**: Hyperparameter tuning with Optuna or similar tools
-- **Testing**: Add unit tests for preprocessing pipeline and inference function
+- **Testing**: Add unit tests for preprocessing pipeline and inference function before production deployment
+- **Computational Efficiency**: Monitor training time with polynomial features; consider feature selection if dimensionality becomes too high
 - **Deployment**: Create API endpoint for real-time predictions
 
 ## 📝 Notes
 
-- The dataset is automatically loaded from a GitHub repository
+- The dataset is automatically loaded from the IISC Data Catalysts GitHub repository
+- Python 3.10+ is recommended for running this notebook
+- Required packages are installed in the first code cell of the notebook
 - All models are saved in the `artifacts/` directory after training
 - The notebook includes comprehensive documentation and comments
+- The enhanced preprocessing pipeline uses KNN imputation and polynomial interaction features
 - Results may vary slightly due to random seeds and data splits
 
 ## 👤 Authors

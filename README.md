@@ -269,14 +269,14 @@ The LightGBM model with target encoding achieved the best performance:
 - The notebook includes comprehensive documentation and comments
 - Results may vary slightly due to random seeds and data splits
 
-## 👤 Author
+## 👤 Authors
 
-**Vimalraj Kanagaraj**
-**Anfaal Obaid Waafy**
-**Manikanda Sakthi Subramaniam**
-**Abhilasha Kawle**
+- **Vimalraj Kanagaraj** (mailto:vimalrajk@iisc.ac.in)
+- **Anfaal Obaid Waafy** (mailto:anfaalwaafy@iisc.ac.in)
+- **Manikanda Sakthi Subramaniam**(mailto:manikandasa1@iisc.ac.in)
+- **Abhilasha Kawle**(mailto:abhilashak@iisc.ac.in)
 
-- Dataset: [GitHub](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho)
+- Dataset: [Kaggale](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho)
 
 ## 📄 License
 

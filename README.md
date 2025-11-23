@@ -1,4 +1,4 @@
-# Used Car Price Prediction
+# Predictive Modelling for Used Car Pricing
 
 A comprehensive machine learning project for predicting used car prices using various regression models and advanced feature engineering techniques.
 

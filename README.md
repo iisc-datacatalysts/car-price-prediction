@@ -54,7 +54,7 @@ The dataset contains information about **8,128 used cars** with the following at
 - `torque`: Torque specification (in Nm or kgm, with RPM range)
 - `seats`: Number of seats
 
-**Dataset Source:** [GitHub Repository](https://raw.githubusercontent.com/vimal-kanagaraj/dataset/main/CarData.csv)
+**Dataset Source:** [Kaggle](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho)
 
 ## 🔧 Features
 
@@ -276,7 +276,7 @@ The LightGBM model with target encoding achieved the best performance:
 - **Manikanda Sakthi Subramaniam**(manikandasa1@iisc.ac.in)
 - **Abhilasha Kawle**(abhilashak@iisc.ac.in)
 
-- Dataset: [Kaggale](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho)
+## Dataset: [Kaggale](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho)
 
 ## 📄 License
 

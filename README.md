@@ -10,6 +10,9 @@ A comprehensive machine learning project for predicting used car prices using va
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Running the Notebook](#running-the-notebook)
+  - [Making Predictions](#making-predictions)
+  - [Interactive Price Prediction Dashboard](#interactive-price-prediction-dashboard)
 - [Methodology](#methodology)
 - [Models Evaluated](#models-evaluated)
 - [Results](#results)
@@ -20,6 +23,8 @@ A comprehensive machine learning project for predicting used car prices using va
 ## 🎯 Overview
 
 This project implements an end-to-end machine learning pipeline for predicting used car prices in the Indian market. The solution includes:
+
+> **🚀 Try the Interactive Dashboard**: Run the notebook and launch the Gradio interface (Cells 79-82) to get a shareable public URL for the price prediction dashboard. The URL will be displayed in the notebook output when you run Cell 82.
 
 - **Comprehensive Data Cleaning**: Handling missing values, normalizing units, and extracting features from mixed-format columns
 - **Enhanced Preprocessing**: 
@@ -32,6 +37,7 @@ This project implements an end-to-end machine learning pipeline for predicting u
 - **Quantile Regression**: Providing prediction intervals for uncertainty estimation
 - **Model Interpretability**: SHAP analysis for feature importance
 - **Production-Ready Inference**: Serialized models and inference function for deployment
+- **Interactive Dashboard**: Gradio-based web interface for real-time price predictions
 
 ## 📊 Dataset
 
@@ -116,8 +122,10 @@ car-price-prediction/
    The notebook will automatically install packages in the first cell, or you can install them manually:
    
    ```bash
-   pip install shap lightgbm category_encoders catboost scikit-learn pandas numpy matplotlib seaborn
+   pip install shap lightgbm category_encoders catboost scikit-learn pandas numpy matplotlib seaborn gradio
    ```
+   
+   Note: Gradio is installed automatically when you run the interactive dashboard cells (Cell 80).
 
 3. **Open the notebook:**
    ```bash
@@ -150,7 +158,6 @@ example_car = {
     'fuel': 'Diesel',
     'transmission': 'Manual',
     'owner': 'First Owner',
-    'seller_type': 'Individual',
     'mileage': '23.4 kmpl',
     'engine': '1248 CC',
     'max_power': '74 bhp',
@@ -161,6 +168,88 @@ example_car = {
 predicted_price = predict_single(example_car)
 print(f"Predicted Price: ₹{predicted_price:,.0f}")
 ```
+
+**Note:** `seller_type` is present in the dataset but is not used as a feature in the model. The model uses `fuel`, `transmission`, and `owner` as categorical features. You can omit `seller_type` from the input dictionary.
+
+### Interactive Price Prediction Dashboard
+
+The notebook includes an interactive Gradio web interface for easy price predictions. The dashboard is embedded directly in the notebook and provides a user-friendly way to estimate car prices.
+
+**To use the dashboard:**
+
+1. **Run all previous cells** (especially model training cells) to ensure the model is trained
+2. **Run Cell 79-82** to launch the Gradio interface:
+   - Cell 79: Markdown header for the dashboard section
+   - Cell 80: Installs Gradio library
+   - Cell 81: Defines helper functions for parsing and feature engineering
+   - Cell 82: Creates and launches the Gradio interface
+
+**Dashboard Features:**
+- **Two-column layout**: Required fields on the left, optional fields on the right
+- **Input validation**: Checks required fields before prediction
+- **Example inputs**: 3 pre-filled examples you can click to auto-fill the form
+- **Real-time predictions**: Instant price estimates with formatted display
+- **Public URL**: Automatically generates a shareable link (works great in Google Colab)
+- **Embedded interface**: Displays directly in the notebook output
+
+**Accessing the Dashboard URL:**
+
+When you run Cell 82, Gradio automatically generates a public URL that will be displayed in the notebook output. The URL format is typically:
+- **Public URL**: `https://xxxxx.gradio.live` (shareable, expires in 1 week)
+- **Local URL**: `http://127.0.0.1:7860` (works when running locally in Jupyter)
+
+**Example Output:**
+```
+Running on local URL:  http://127.0.0.1:7860
+Running on public URL: https://xxxxx.gradio.live
+
+This share link expires in 1 week. For free permanent hosting and GPU upgrades, 
+run `gradio deploy` from the terminal to deploy to Hugging Face Spaces.
+```
+
+**Important Notes:**
+- The public URL is automatically generated and shareable with anyone
+- Free Gradio URLs expire after 1 week
+- A new URL is generated each time you run the dashboard
+- For permanent hosting, deploy to [Hugging Face Spaces](https://huggingface.co/spaces) using `gradio deploy`
+- The interface is also embedded directly in the notebook output
+
+**Required Fields:**
+- Car Name (e.g., "Maruti Swift Dzire VDI")
+- Manufacturing Year
+- Kilometers Driven
+- Fuel Type (Diesel, Petrol, LPG, CNG)
+- Transmission (Manual, Automatic)
+- Owner (First Owner, Second Owner, etc.)
+
+**Optional Fields:**
+- Mileage (format: "23.4 kmpl" or "17.3 km/kg")
+- Engine (format: "1248 CC")
+- Max Power (format: "74 bhp")
+- Torque (format: "190Nm@ 2000rpm")
+- Number of Seats
+
+**Note:** The dashboard uses the trained model variables directly from the notebook's namespace, so make sure all model training cells have been executed first.
+
+**Accessing the Dashboard URL:**
+
+When you run Cell 82, Gradio will automatically generate a public URL. The URL will be displayed in the notebook output, for example:
+
+```
+Running on local URL:  http://127.0.0.1:7860
+Running on public URL: https://1152680073981e44ef.gradio.live
+
+This share link expires in 1 week. For free permanent hosting and GPU upgrades, 
+run `gradio deploy` from the terminal to deploy to Hugging Face Spaces.
+```
+
+**Important Notes:**
+- The public URL is automatically generated and shareable
+- Free Gradio URLs expire after 1 week
+- The URL is unique each time you run the dashboard
+- For permanent hosting, deploy to [Hugging Face Spaces](https://huggingface.co/spaces) using `gradio deploy`
+- The interface also works locally at `http://127.0.0.1:7860` when running in Jupyter
+- In Google Colab, the public URL allows access from anywhere
 
 ## 📈 Methodology
 
@@ -260,6 +349,8 @@ The LightGBM model with target encoding achieved the best performance:
   - `matplotlib` - Plotting
   - `seaborn` - Statistical visualization
   - `shap` - Model interpretability
+- **Interactive UI**:
+  - `gradio` - Web interface for model predictions
 - **Utilities**:
   - `joblib` - Model serialization
 
@@ -287,15 +378,18 @@ The LightGBM model with target encoding achieved the best performance:
 - **Testing**: Add unit tests for preprocessing pipeline and inference function before production deployment
 - **Computational Efficiency**: Monitor training time with polynomial features; consider feature selection if dimensionality becomes too high
 - **Deployment**: Create API endpoint for real-time predictions
+- **Dashboard Enhancements**: Add prediction intervals, feature importance visualization, and comparison with similar cars
 
 ## 📝 Notes
 
 - The dataset is automatically loaded from the IISC Data Catalysts GitHub repository
 - Python 3.10+ is recommended for running this notebook
 - Required packages are installed in the first code cell of the notebook
+- Gradio is automatically installed when running the interactive dashboard cells
 - All models are saved in the `artifacts/` directory after training
 - The notebook includes comprehensive documentation and comments
 - The enhanced preprocessing pipeline uses KNN imputation and polynomial interaction features
+- The interactive Gradio dashboard is embedded in the notebook and works seamlessly in both Jupyter and Google Colab
 - Results may vary slightly due to random seeds and data splits
 
 ## 👤 Authors

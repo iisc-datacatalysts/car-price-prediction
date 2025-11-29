@@ -201,7 +201,7 @@ When you run Cell 82, Gradio automatically generates a public URL that will be d
 **Example Output:**
 ```
 Running on local URL:  http://127.0.0.1:7860
-Running on public URL: https://xxxxx.gradio.live
+Running on public URL: [https://1b0dcf945eea168aee.gradio.live](https://1b0dcf945eea168aee.gradio.live)
 
 This share link expires in 1 week. For free permanent hosting and GPU upgrades, 
 run `gradio deploy` from the terminal to deploy to Hugging Face Spaces.
